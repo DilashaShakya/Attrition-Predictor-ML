@@ -4,7 +4,7 @@
 
 **Complete Machine Learning Pipeline + Web Application**
 
-*Comprehensive ML Project: EDA → Model Comparison → Hyperparameter Tuning → Production Deployment*
+*Comprehensive ML Project: EDA → Model Comparison → Hyperparameter Tuning → UI *
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB)](https://python.org)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E)](https://scikit-learn.org/)
