@@ -21,7 +21,7 @@
 
 ## 🧠 Machine Learning Pipeline Overview
 
-This project demonstrates a complete end-to-end machine learning workflow, from exploratory data analysis to production deployment. The focus is on comprehensive model evaluation and optimization rather than just building a single model.
+This project predicts employee attrition using machine learning and presents the results through a simple web interface. Different models were tested and compared, and the final model is exposed via a FastAPI API and a Next.js frontend.
 
 ### 📊 Key ML Achievements
 - **4 Algorithms Compared**: Random Forest, XGBoost, SVM, KNN
