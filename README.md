@@ -173,7 +173,8 @@ preprocess = ColumnTransformer([
 - Tailwind CSS: Utility-first CSS framework
 - Framer Motion: Animation and gesture library
 ```
-<img width="577" height="363" alt="image" src="https://github.com/user-attachments/assets/ed847b37-0ebe-4b62-b8a7-dc549dae0c61" />
+<img width="587" height="461" alt="image" src="https://github.com/user-attachments/assets/afb6304d-7487-46c2-a059-16289e243caa" />
+
 
 
 
@@ -240,9 +241,8 @@ attrition-predictor/
 
 4. **Start Backend API**
    ```bash
-   cd backend
-   uvicorn app:app --reload --host 0.0.0.0 --port 8000
-   cd ..
+   # From root directory - uses backend/app.py
+   uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
    ```
 
 5. **Start Frontend** (New Terminal)
