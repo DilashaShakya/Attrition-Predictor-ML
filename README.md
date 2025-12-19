@@ -27,7 +27,7 @@ This project predicts employee attrition using machine learning and presents the
 - **4 Algorithms Compared**: Random Forest, XGBoost, SVM, KNN
 - **Hyperparameter Optimization**: GridSearchCV with 5-fold cross-validation
 - **85.85% Best Accuracy**: Random Forest outperforms other algorithms
-- **Production Deployment**: Model serialized and served via REST API
+- **Model**: Model serialized and served via REST API
 - **Web Integration**: Interactive dashboard for real-time predictions
 
 ## 📈 Exploratory Data Analysis (EDA)
