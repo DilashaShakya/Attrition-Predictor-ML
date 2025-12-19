@@ -134,14 +134,11 @@ preprocess = ColumnTransformer([
 - **Format**: joblib pickle for scikit-learn compatibility
 - **File**: `attrition_model.pkl` (production model)
 - **Schema**: `feature_cols.pkl` (feature preprocessing)
-- **Size**: Optimized for fast loading and inference
 
 ## 🎨 Web Application Interface
 
 ### 🎯 User Experience Design
 - **Modern UI**: Clean, professional interface with yellow accent theme
-- **Responsive Design**: Mobile-first approach, works on all devices
-- **Interactive Forms**: Real-time validation and user feedback
 - **Visual Results**: Progress bars, risk indicators, and animated transitions
 
 ### ⚡ Technical Implementation
@@ -183,17 +180,34 @@ preprocess = ColumnTransformer([
 ### 📁 Project Structure
 ```
 attrition-predictor/
-├── 📊 Attrition.csv                    # Raw dataset (1.4MB)
-├── 🤖 EAD-checkpoint.ipynb             # Complete ML analysis (EDA + Modeling)
+├── 📊 data/                           # Dataset directory
+│   └── Attrition.csv                  # Raw dataset (1.4MB)
+├── 🤖 ML-notebook/                     # Machine learning development
+│   └── EAD-checkpoint.ipynb           # Complete ML analysis (EDA + Modeling)
 ├── attrition-frontend/                 # Next.js web application
 │   ├── app/                           # App Router pages and layouts
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
 │   ├── components/                    # Reusable UI components
-│   └── package.json                   # Frontend dependencies
+│   │   └── ui/                        # UI component library
+│   ├── .gitignore                     # Frontend-specific ignore patterns
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── package.json                   # Frontend dependencies
+│   ├── package-lock.json
+│   ├── next.config.ts
+│   ├── postcss.config.mjs
+│   ├── tsconfig.json
+│   ├── eslint.config.mjs
+│   └── README.md
 └── backend/                           # FastAPI ML service
-    ├── app.py                         # API endpoints and ML logic
-    ├── attrition_model.pkl            # Serialized Random Forest model
-    ├── feature_cols.pkl               # Feature preprocessing schema
-    └── EAD-checkpoint.ipynb           # Model development notebook
+    ├── 🐍 app.py                      # API endpoints and ML logic
+    ├── 🤖 attrition_model.pkl         # Serialized Random Forest model
+    ├── ⚙️ feature_cols.pkl            # Feature preprocessing schema
+    ├── 📦 requirements.txt            # Python dependencies
+    └── 🙈 .gitignore                  # Backend-specific ignore patterns
 ```
 
 ## 🚀 Getting Started
@@ -210,21 +224,34 @@ attrition-predictor/
    cd attrition-predictor
    ```
 
-2. **Backend Setup**
+2. **Install Backend Dependencies**
    ```bash
    cd backend
-   pip install fastapi uvicorn scikit-learn pandas numpy joblib
-   uvicorn app:app --reload --host 0.0.0.0 --port 8000
+   pip install -r requirements.txt
+   cd ..
    ```
 
-3. **Frontend Setup** (New Terminal)
+3. **Install Frontend Dependencies**
    ```bash
    cd attrition-frontend
    npm install
+   cd ..
+   ```
+
+4. **Start Backend API**
+   ```bash
+   cd backend
+   uvicorn app:app --reload --host 0.0.0.0 --port 8000
+   cd ..
+   ```
+
+5. **Start Frontend** (New Terminal)
+   ```bash
+   cd attrition-frontend
    npm run dev
    ```
 
-4. **Access Application**
+6. **Access Application**
    - Frontend: http://localhost:3000
    - API Docs: http://localhost:8000/docs
 
@@ -325,11 +352,13 @@ This project demonstrates proficiency in:
 
 ## 📚 Key Files & Notebooks
 
-- **`EAD-checkpoint.ipynb`**: Complete ML workflow from data loading to model deployment
-- **`attrition_model.pkl`**: Production-ready Random Forest model
-- **`feature_cols.pkl`**: Preprocessing schema for consistent feature handling
-- **`app.py`**: FastAPI application with ML prediction endpoints
-- **`page.tsx`**: React interface with form handling and result visualization
+- **`ML-notebook/EAD-checkpoint.ipynb`**: Complete ML workflow from data loading to model deployment
+- **`data/Attrition.csv`**: Raw HR analytics dataset for model training
+- **`backend/attrition_model.pkl`**: Production-ready Random Forest model
+- **`backend/feature_cols.pkl`**: Preprocessing schema for consistent feature handling
+- **`backend/app.py`**: FastAPI application with ML prediction endpoints
+- **`backend/requirements.txt`**: Python dependencies for the backend API
+- **`attrition-frontend/app/page.tsx`**: React interface with form handling and result visualization
 
 ## 🏆 Project Highlights
 

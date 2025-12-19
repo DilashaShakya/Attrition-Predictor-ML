@@ -56,11 +56,46 @@ function riskConfig(p: number | null) {
 
 export default function Page() {
   const [form, setForm] = useState({
+    // Basic Info
     Age: "30",
-    MonthlyIncome: "5000",
-    OverTime: "No",
+    Gender: "Male",
+    MaritalStatus: "Single",
+    
+    // Job Details
     Department: "Research & Development",
+    JobRole: "Research Scientist",
+    JobLevel: "2",
     BusinessTravel: "Travel_Rarely",
+    OverTime: "No",
+    
+    // Compensation
+    MonthlyIncome: "5000",
+    PercentSalaryHike: "15",
+    
+    // Experience & Tenure
+    TotalWorkingYears: "5",
+    YearsAtCompany: "3",
+    YearsInCurrentRole: "2",
+    YearsSinceLastPromotion: "1",
+    YearsWithCurrManager: "2",
+    NumCompaniesWorked: "2",
+    
+    // Education
+    Education: "3",
+    EducationField: "Life Sciences",
+    
+    // Satisfaction & Engagement
+    EnvironmentSatisfaction: "3",
+    JobSatisfaction: "3",
+    RelationshipSatisfaction: "3",
+    JobInvolvement: "3",
+    WorkLifeBalance: "3",
+    
+    // Other
+    DistanceFromHome: "10",
+    TrainingTimesLastYear: "2",
+    StockOptionLevel: "1",
+    PerformanceRating: "3",
   });
 
   const [loading, setLoading] = useState(false);
@@ -79,14 +114,31 @@ export default function Page() {
     setResult(null);
 
     try {
-   
-      await new Promise(r => setTimeout(r, 2000));
 
       const payload = {
         data: {
           ...form,
+          // Convert numeric fields
           Age: form.Age ? Number(form.Age) : null,
           MonthlyIncome: form.MonthlyIncome ? Number(form.MonthlyIncome) : null,
+          PercentSalaryHike: form.PercentSalaryHike ? Number(form.PercentSalaryHike) : null,
+          TotalWorkingYears: form.TotalWorkingYears ? Number(form.TotalWorkingYears) : null,
+          YearsAtCompany: form.YearsAtCompany ? Number(form.YearsAtCompany) : null,
+          YearsInCurrentRole: form.YearsInCurrentRole ? Number(form.YearsInCurrentRole) : null,
+          YearsSinceLastPromotion: form.YearsSinceLastPromotion ? Number(form.YearsSinceLastPromotion) : null,
+          YearsWithCurrManager: form.YearsWithCurrManager ? Number(form.YearsWithCurrManager) : null,
+          NumCompaniesWorked: form.NumCompaniesWorked ? Number(form.NumCompaniesWorked) : null,
+          Education: form.Education ? Number(form.Education) : null,
+          EnvironmentSatisfaction: form.EnvironmentSatisfaction ? Number(form.EnvironmentSatisfaction) : null,
+          JobSatisfaction: form.JobSatisfaction ? Number(form.JobSatisfaction) : null,
+          RelationshipSatisfaction: form.RelationshipSatisfaction ? Number(form.RelationshipSatisfaction) : null,
+          JobInvolvement: form.JobInvolvement ? Number(form.JobInvolvement) : null,
+          WorkLifeBalance: form.WorkLifeBalance ? Number(form.WorkLifeBalance) : null,
+          DistanceFromHome: form.DistanceFromHome ? Number(form.DistanceFromHome) : null,
+          TrainingTimesLastYear: form.TrainingTimesLastYear ? Number(form.TrainingTimesLastYear) : null,
+          StockOptionLevel: form.StockOptionLevel ? Number(form.StockOptionLevel) : null,
+          PerformanceRating: form.PerformanceRating ? Number(form.PerformanceRating) : null,
+          JobLevel: form.JobLevel ? Number(form.JobLevel) : null,
         },
       };
 
@@ -96,15 +148,24 @@ export default function Page() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Backend error: ${errorText}`);
+      }
       const json = (await res.json()) as Result;
       setResult(json);
     } catch (e: any) {
+      // Show error to user
+      if (e.message && e.message.includes("Failed to fetch") || e.message.includes("ERR_CONNECTION_REFUSED")) {
+        setError("Backend server is not running. Please start the backend server on port 8000.");
+      } else {
+        setError(e.message || "An error occurred while making the prediction.");
+      }
       // Fallback for demo purposes if backend isn't running
       setResult({
         prediction: "Low Risk",
         probability: 0.15,
-        sentence: "Based on the provided data, this employee shows high stability markers."
+        sentence: "Based on the provided data, this employee shows high stability markers. (Demo mode - backend not connected)"
       });
     } finally {
       setLoading(false);
@@ -164,83 +225,403 @@ export default function Page() {
                 <h2 className="text-xl font-bold text-slate-800">Employee Profile</h2>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <InputGroup label="Age" icon={<TrendingDown className="w-4 h-4" />}>
-                  <input
-                    type="number"
-                    value={form.Age}
-                    onChange={(e) => setForm(f => ({ ...f, Age: e.target.value }))}
-                    placeholder="25-60"
-                    className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
-                  />
-                </InputGroup>
+              <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2">
+                {/* Basic Information */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Basic Information</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Age" icon={<TrendingDown className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.Age}
+                        onChange={(e) => setForm(f => ({ ...f, Age: e.target.value }))}
+                        placeholder="25-60"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
 
-                <InputGroup label="Monthly Income" icon={<Briefcase className="w-4 h-4" />}>
-                  <div className="relative">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                    <input
-                      type="number"
-                      value={form.MonthlyIncome}
-                      onChange={(e) => setForm(f => ({ ...f, MonthlyIncome: e.target.value }))}
-                      placeholder="Amount"
-                      className="w-full bg-slate-50 border-none rounded-2xl pl-9 pr-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
-                    />
+                    <InputGroup label="Gender" icon={<Users className="w-4 h-4" />}>
+                      <div className="grid grid-cols-2 gap-2">
+                        {["Male", "Female"].map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setForm(f => ({ ...f, Gender: opt }))}
+                            className={cn(
+                              "py-3 rounded-2xl font-bold text-sm transition-all",
+                              form.Gender === opt 
+                                ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
+                                : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                            )}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </InputGroup>
+
+                    <InputGroup label="Marital Status" icon={<Users className="w-4 h-4" />} className="md:col-span-2">
+                      <div className="grid grid-cols-3 gap-2">
+                        {["Single", "Married", "Divorced"].map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setForm(f => ({ ...f, MaritalStatus: opt }))}
+                            className={cn(
+                              "py-3 rounded-2xl font-bold text-sm transition-all",
+                              form.MaritalStatus === opt 
+                                ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
+                                : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                            )}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </InputGroup>
                   </div>
-                </InputGroup>
+                </div>
 
-                <InputGroup label="Overtime Commitment" icon={<Clock className="w-4 h-4" />}>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Yes", "No"].map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => setForm(f => ({ ...f, OverTime: opt }))}
-                        className={cn(
-                          "py-3 rounded-2xl font-bold text-sm transition-all",
-                          form.OverTime === opt 
-                            ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
-                            : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                        )}
+                {/* Job Details */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Job Details</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Department" icon={<Users className="w-4 h-4" />}>
+                      <select
+                        value={form.Department}
+                        onChange={(e) => setForm(f => ({ ...f, Department: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
                       >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </InputGroup>
+                        <option value="Sales">Sales</option>
+                        <option value="Research & Development">Research & Development</option>
+                        <option value="Human Resources">Human Resources</option>
+                      </select>
+                    </InputGroup>
 
-                <InputGroup label="Department" icon={<Users className="w-4 h-4" />}>
-                  <select
-                    value={form.Department}
-                    onChange={(e) => setForm(f => ({ ...f, Department: e.target.value }))}
-                    className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
-                  >
-                    <option value="Sales">Sales</option>
-                    <option value="Research & Development">R&D</option>
-                    <option value="Human Resources">HR</option>
-                  </select>
-                </InputGroup>
-
-                <InputGroup label="Travel Frequency" icon={<MapPin className="w-4 h-4" />} className="md:col-span-2">
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { id: "Non-Travel", label: "No Travel" },
-                      { id: "Travel_Rarely", label: "Rarely" },
-                      { id: "Travel_Frequently", label: "Frequently" }
-                    ].map((opt) => (
-                      <button
-                        key={opt.id}
-                        onClick={() => setForm(f => ({ ...f, BusinessTravel: opt.id }))}
-                        className={cn(
-                          "px-6 py-3 rounded-2xl font-bold text-sm transition-all flex-1 min-w-[120px]",
-                          form.BusinessTravel === opt.id
-                            ? "bg-yellow-600 text-white shadow-lg shadow-yellow-100"
-                            : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                        )}
+                    <InputGroup label="Job Role" icon={<Briefcase className="w-4 h-4" />}>
+                      <select
+                        value={form.JobRole}
+                        onChange={(e) => setForm(f => ({ ...f, JobRole: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
                       >
-                        {opt.label}
-                      </button>
-                    ))}
+                        <option value="Sales Executive">Sales Executive</option>
+                        <option value="Research Scientist">Research Scientist</option>
+                        <option value="Laboratory Technician">Laboratory Technician</option>
+                        <option value="Manufacturing Director">Manufacturing Director</option>
+                        <option value="Healthcare Representative">Healthcare Representative</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Sales Representative">Sales Representative</option>
+                        <option value="Research Director">Research Director</option>
+                        <option value="Human Resources">Human Resources</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Job Level" icon={<TrendingDown className="w-4 h-4" />}>
+                      <select
+                        value={form.JobLevel}
+                        onChange={(e) => setForm(f => ({ ...f, JobLevel: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Level 3</option>
+                        <option value="4">Level 4</option>
+                        <option value="5">Level 5</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Travel Frequency" icon={<MapPin className="w-4 h-4" />}>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { id: "Non-Travel", label: "No Travel" },
+                          { id: "Travel_Rarely", label: "Rarely" },
+                          { id: "Travel_Frequently", label: "Frequently" }
+                        ].map((opt) => (
+                          <button
+                            key={opt.id}
+                            onClick={() => setForm(f => ({ ...f, BusinessTravel: opt.id }))}
+                            className={cn(
+                              "px-4 py-2 rounded-2xl font-bold text-xs transition-all flex-1 min-w-[80px]",
+                              form.BusinessTravel === opt.id
+                                ? "bg-yellow-600 text-white shadow-lg shadow-yellow-100"
+                                : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                            )}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </InputGroup>
+
+                    <InputGroup label="Overtime" icon={<Clock className="w-4 h-4" />}>
+                      <div className="grid grid-cols-2 gap-2">
+                        {["Yes", "No"].map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setForm(f => ({ ...f, OverTime: opt }))}
+                            className={cn(
+                              "py-3 rounded-2xl font-bold text-sm transition-all",
+                              form.OverTime === opt 
+                                ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
+                                : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                            )}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </InputGroup>
                   </div>
-                </InputGroup>
+                </div>
+
+                {/* Compensation */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Compensation</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Monthly Income" icon={<Briefcase className="w-4 h-4" />}>
+                      <div className="relative">
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                        <input
+                          type="number"
+                          value={form.MonthlyIncome}
+                          onChange={(e) => setForm(f => ({ ...f, MonthlyIncome: e.target.value }))}
+                          placeholder="Amount"
+                          className="w-full bg-slate-50 border-none rounded-2xl pl-9 pr-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                        />
+                      </div>
+                    </InputGroup>
+
+                    <InputGroup label="Percent Salary Hike" icon={<TrendingDown className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.PercentSalaryHike}
+                        onChange={(e) => setForm(f => ({ ...f, PercentSalaryHike: e.target.value }))}
+                        placeholder="%"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+                  </div>
+                </div>
+
+                {/* Experience & Tenure */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Experience & Tenure</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Total Working Years" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.TotalWorkingYears}
+                        onChange={(e) => setForm(f => ({ ...f, TotalWorkingYears: e.target.value }))}
+                        placeholder="Years"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Years at Company" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.YearsAtCompany}
+                        onChange={(e) => setForm(f => ({ ...f, YearsAtCompany: e.target.value }))}
+                        placeholder="Years"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Years in Current Role" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.YearsInCurrentRole}
+                        onChange={(e) => setForm(f => ({ ...f, YearsInCurrentRole: e.target.value }))}
+                        placeholder="Years"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Years Since Last Promotion" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.YearsSinceLastPromotion}
+                        onChange={(e) => setForm(f => ({ ...f, YearsSinceLastPromotion: e.target.value }))}
+                        placeholder="Years"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Years with Current Manager" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.YearsWithCurrManager}
+                        onChange={(e) => setForm(f => ({ ...f, YearsWithCurrManager: e.target.value }))}
+                        placeholder="Years"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Number of Companies Worked" icon={<Briefcase className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.NumCompaniesWorked}
+                        onChange={(e) => setForm(f => ({ ...f, NumCompaniesWorked: e.target.value }))}
+                        placeholder="Count"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Education</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Education Level" icon={<Users className="w-4 h-4" />}>
+                      <select
+                        value={form.Education}
+                        onChange={(e) => setForm(f => ({ ...f, Education: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">Below College</option>
+                        <option value="2">College</option>
+                        <option value="3">Bachelor</option>
+                        <option value="4">Master</option>
+                        <option value="5">Doctor</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Education Field" icon={<Users className="w-4 h-4" />}>
+                      <select
+                        value={form.EducationField}
+                        onChange={(e) => setForm(f => ({ ...f, EducationField: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="Life Sciences">Life Sciences</option>
+                        <option value="Other">Other</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Technical Degree">Technical Degree</option>
+                        <option value="Human Resources">Human Resources</option>
+                      </select>
+                    </InputGroup>
+                  </div>
+                </div>
+
+                {/* Satisfaction & Engagement */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Satisfaction & Engagement (1-4 scale)</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Environment Satisfaction" icon={<ShieldCheck className="w-4 h-4" />}>
+                      <select
+                        value={form.EnvironmentSatisfaction}
+                        onChange={(e) => setForm(f => ({ ...f, EnvironmentSatisfaction: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">1 - Low</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - High</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Job Satisfaction" icon={<ShieldCheck className="w-4 h-4" />}>
+                      <select
+                        value={form.JobSatisfaction}
+                        onChange={(e) => setForm(f => ({ ...f, JobSatisfaction: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">1 - Low</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - High</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Relationship Satisfaction" icon={<ShieldCheck className="w-4 h-4" />}>
+                      <select
+                        value={form.RelationshipSatisfaction}
+                        onChange={(e) => setForm(f => ({ ...f, RelationshipSatisfaction: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">1 - Low</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - High</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Job Involvement" icon={<ShieldCheck className="w-4 h-4" />}>
+                      <select
+                        value={form.JobInvolvement}
+                        onChange={(e) => setForm(f => ({ ...f, JobInvolvement: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">1 - Low</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - High</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Work Life Balance" icon={<ShieldCheck className="w-4 h-4" />}>
+                      <select
+                        value={form.WorkLifeBalance}
+                        onChange={(e) => setForm(f => ({ ...f, WorkLifeBalance: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="1">1 - Low</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4 - High</option>
+                      </select>
+                    </InputGroup>
+                  </div>
+                </div>
+
+                {/* Other */}
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Other Details</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputGroup label="Distance from Home (miles)" icon={<MapPin className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.DistanceFromHome}
+                        onChange={(e) => setForm(f => ({ ...f, DistanceFromHome: e.target.value }))}
+                        placeholder="Miles"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Training Times Last Year" icon={<Clock className="w-4 h-4" />}>
+                      <input
+                        type="number"
+                        value={form.TrainingTimesLastYear}
+                        onChange={(e) => setForm(f => ({ ...f, TrainingTimesLastYear: e.target.value }))}
+                        placeholder="Count"
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium"
+                      />
+                    </InputGroup>
+
+                    <InputGroup label="Stock Option Level" icon={<TrendingDown className="w-4 h-4" />}>
+                      <select
+                        value={form.StockOptionLevel}
+                        onChange={(e) => setForm(f => ({ ...f, StockOptionLevel: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                      </select>
+                    </InputGroup>
+
+                    <InputGroup label="Performance Rating" icon={<TrendingDown className="w-4 h-4" />}>
+                      <select
+                        value={form.PerformanceRating}
+                        onChange={(e) => setForm(f => ({ ...f, PerformanceRating: e.target.value }))}
+                        className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-yellow-500/20 transition-all outline-none text-slate-700 font-medium appearance-none"
+                      >
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </InputGroup>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-10">
