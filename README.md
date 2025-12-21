@@ -273,11 +273,6 @@ attrition-predictor/
 }
 ```
 
-### 📊 Risk Categories
-- **🟢 Low Risk**: < 40% attrition probability
-- **🟡 Medium Risk**: 40-70% attrition probability
-- **🔴 High Risk**: > 70% attrition probability
-
 ## 📈 Model Performance Analysis
 
 ### 🎯 Confusion Matrix (Estimated)
